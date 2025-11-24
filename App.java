@@ -3,15 +3,14 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
-import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
-/**
- * Template JavaFX application.
- */
+
+
 public class App extends Application {
     public static void main(String[] args) {
         launch(args);
@@ -19,48 +18,54 @@ public class App extends Application {
     
     @Override
     public void start(Stage stage) {
-        // Create components to add.
-        VBox contentBox = new VBox();
+
+        // Create components and containers
+        BorderPane mainBox = new BorderPane();
+
+        VBox contentBox = new VBox(5);
         contentBox.setAlignment(Pos.CENTER);
+        contentBox.setStyle("-fx-padding: 10");
 
-        Label promptLabel = new Label();
-        promptLabel.setText("Enter your thoughts");
+        VBox menuBox = new VBox(5);
+        menuBox.setAlignment(Pos.CENTER);
+        menuBox.setStyle("-fx-padding: 10");
 
-        TextField thoughtsBox = new TextField();
-        thoughtsBox.setMaxWidth(150);
-        thoughtsBox.setPromptText("type here");
-        
-        TextArea messageBox = new TextArea();
-        messageBox.setEditable(false);
+        VBox flashcardBox = new VBox();
+        flashcardBox.setAlignment(Pos.CENTER);
+        flashcardBox.setStyle("-fx-border-color: black");
+        flashcardBox.setMinWidth(300);
+        flashcardBox.setMinHeight(200);
+        Text flashcardText = new Text("No flashcards open.");
 
-        Button submissionBtn = new Button();
-        submissionBtn.setText("Submit");
+        HBox controlsBox = new HBox(5);
+        controlsBox.setAlignment(Pos.CENTER);
 
-        // Set up reactions (aka callbacks).
-        submissionBtn.setOnAction(event -> onSubmitThought(thoughtsBox, messageBox));
+        Button previousBtn = new Button("<");
+        Button flipBtn = new Button("Flip");
+        Button nextBtn = new Button(">");
 
-        // Add components to the content box.
-        contentBox.getChildren().add(promptLabel);
-        contentBox.getChildren().add(thoughtsBox);
-        contentBox.getChildren().add(submissionBtn);
-        contentBox.getChildren().add(messageBox);
+        Label menuTitleLabel = new Label("Menu");
+        menuTitleLabel.setStyle("-fx-font-size: 15; -fx-font-weight: bold");
 
-        // Set up the window and display it.
-        Scene scene = new Scene(contentBox, 300, 200);
+        Button menuBtn = new Button("Option 1");
+
+
+        // Organize components in 
+        mainBox.setLeft(contentBox);
+        mainBox.setRight(menuBox);
+        contentBox.getChildren().addAll(flashcardBox, controlsBox);
+        flashcardBox.getChildren().add(flashcardText);
+        controlsBox.getChildren().addAll(previousBtn, flipBtn, nextBtn);
+        menuBox.getChildren().addAll(menuTitleLabel, menuBtn);
+
+
+        // Button reactions
+
+
+        // Set up and display window
+        Scene scene = new Scene(mainBox);
         stage.setScene(scene);
-        stage.setTitle("Amazing App 2000");
+        stage.setTitle("Flashcards");
         stage.show();
-    }
-
-    /**
-     * Handle the submission of a thought.
-     * @param inputBox  The TextField where the user types their thought.
-     * @param outputBox The TextArea where the submitted thoughts are displayed.
-     */
-    void onSubmitThought(TextField inputBox, TextArea outputBox) {
-        String text = inputBox.getText();
-        inputBox.clear();
-        System.out.println("Interesting thought: " + text);
-        outputBox.appendText("Interesting thought: " + text + "\n");
     }
 }
