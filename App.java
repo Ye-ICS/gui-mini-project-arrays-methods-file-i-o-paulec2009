@@ -13,6 +13,10 @@ import javafx.stage.Stage;
 
 
 public class App extends Application {
+    int correctAnswers = 0;
+    int incorrectAnswers = 0;
+    Text correctText;
+    Text incorrectText;
     public static void main(String[] args) {
         launch(args);
     }
@@ -52,11 +56,11 @@ public class App extends Application {
         controlsBox.setAlignment(Pos.CENTER);
 
         Button correctBtn = new Button("✓");
-        Text correctText = new Text("0");
+        correctText = new Text("0");
         HBox.setMargin(correctText, new Insets(0, 60, 0, 0));
     
         Button incorrectBtn = new Button("X");
-        Text incorrectText = new Text("0");
+        incorrectText = new Text("0");
         HBox.setMargin(incorrectText, new Insets(0, 0, 0, 60));
 
         Button previousBtn = new Button("<");
@@ -94,6 +98,9 @@ public class App extends Application {
 
 
         // Button reactions
+        correctBtn.setOnAction(event -> updateCorrectAnswers());
+        incorrectBtn.setOnAction(event -> updateIncorrectAnswers());
+        resetScoreBtn.setOnAction(event -> resetScore());
 
 
         // Set up and display window
@@ -101,5 +108,23 @@ public class App extends Application {
         stage.setTitle("Flashcards App");
         stage.setScene(scene);
         stage.show();
+    }
+
+
+    void updateCorrectAnswers() {
+        correctAnswers++;
+        correctText.setText(Integer.toString(correctAnswers));
+    }
+
+    void updateIncorrectAnswers() {
+        incorrectAnswers++;
+        incorrectText.setText(Integer.toString(incorrectAnswers));
+    }
+
+    void resetScore() {
+        correctAnswers = 0;
+        incorrectAnswers = 0;
+        correctText.setText("0");
+        incorrectText.setText("0");
     }
 }
