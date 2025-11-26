@@ -117,6 +117,8 @@ public class App extends Application {
         resetScoreBtn.setOnAction(event -> resetScore());
         timesTablesDeckBtn.setOnAction(event -> setDeck("Times Tables Deck.txt"));
         flipBtn.setOnAction(event -> flipCard());
+        nextBtn.setOnAction(event -> nextCard());
+        previousBtn.setOnAction(event -> previousCard());
 
 
         // Set up and display window
@@ -172,10 +174,51 @@ public class App extends Application {
 
 
     void flipCard() {
-        if (flashcardText.getText().equals(questions[progress-1])) {
-            flashcardText.setText(answers[progress-1]);
-        } else {
+        try {
+            if (flashcardText.getText().equals(questions[progress-1])) {
+                flashcardText.setText(answers[progress-1]);
+            } else {
+                flashcardText.setText(questions[progress-1]);
+            }
+
+        } catch (NullPointerException npe) {
+            messageText.setText("No deck has been selected.");
+            return;
+        }
+        
+    }
+
+
+    void nextCard() {
+        try {
+            if (progress == questions.length) {
+                progress = 1;
+            } else {
+                progress++;
+            }
+            progressText.setText(Integer.toString(progress) + "/" + questions.length);
             flashcardText.setText(questions[progress-1]);
+
+        } catch (NullPointerException npe) {
+            messageText.setText("No deck has been selected.");
+            return;
+        }
+    }
+
+
+    void previousCard() {
+        try {
+            if (progress == 1) {
+                progress = questions.length;
+            } else {
+                progress--;
+            }
+            progressText.setText(Integer.toString(progress) + "/" + questions.length);
+            flashcardText.setText(questions[progress-1]);
+
+        } catch (NullPointerException npe) {
+            messageText.setText("No deck has been selected.");
+            return;
         }
     }
 }
