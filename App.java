@@ -1,3 +1,7 @@
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.Scanner;
+
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -15,8 +19,18 @@ import javafx.stage.Stage;
 public class App extends Application {
     int correctAnswers = 0;
     int incorrectAnswers = 0;
+    int progress = 0;
+    String currentDeck;
+    String[] questions;
+    String [] answers;
+
     Text correctText;
     Text incorrectText;
+    Text deckTitleText;
+    Text progressText;
+    Text messageText;
+    Text flashcardText;
+    
     public static void main(String[] args) {
         launch(args);
     }
@@ -40,28 +54,28 @@ public class App extends Application {
         flashcardBox.setStyle("-fx-border-color: black");
         flashcardBox.setMinWidth(300);
         flashcardBox.setMinHeight(200);
-        Text flashcardText = new Text();
+        flashcardText = new Text();
 
         HBox deckDescriptionBox = new HBox();
         deckDescriptionBox.setAlignment(Pos.CENTER);
 
-        Text deckTitleText = new Text("(deck title)");
+        deckTitleText = new Text("(deck title)");
         Text seperatorText = new Text("    |    ");
-        Text deckProgressText = new Text("0/0");
+        progressText = new Text("0/0");
         deckTitleText.setStyle("-fx-font-size: 13");
         seperatorText.setStyle("-fx-font-size: 13");
-        deckProgressText.setStyle("-fx-font-size: 13");
+        progressText.setStyle("-fx-font-size: 13");
 
         HBox controlsBox = new HBox(5);
         controlsBox.setAlignment(Pos.CENTER);
 
         Button correctBtn = new Button("✓");
         correctText = new Text("0");
-        HBox.setMargin(correctText, new Insets(0, 60, 0, 0));
+        HBox.setMargin(correctText, new Insets(0, 50, 0, 0));
     
         Button incorrectBtn = new Button("X");
         incorrectText = new Text("0");
-        HBox.setMargin(incorrectText, new Insets(0, 0, 0, 60));
+        HBox.setMargin(incorrectText, new Insets(0, 0, 0, 50));
 
         Button previousBtn = new Button("<");
         Button flipBtn = new Button("Flip");
@@ -82,7 +96,7 @@ public class App extends Application {
         VBox messageBox = new VBox();
         messageBox.setAlignment(Pos.CENTER);
         messageBox.setStyle("-fx-padding: 10");
-        Text messageText = new Text("No flashcards open.");
+        messageText = new Text("No flashcards open.");
 
 
         // Organize components in 
@@ -91,7 +105,7 @@ public class App extends Application {
         mainBox.setBottom(messageBox);
         flashcardBox.getChildren().add(flashcardText);
         messageBox.getChildren().add(messageText);
-        deckDescriptionBox.getChildren().addAll(deckTitleText, seperatorText, deckProgressText);
+        deckDescriptionBox.getChildren().addAll(deckTitleText, seperatorText, progressText);
         contentBox.getChildren().addAll(deckDescriptionBox, flashcardBox, controlsBox);
         controlsBox.getChildren().addAll(correctBtn, correctText, previousBtn, flipBtn, nextBtn, incorrectText, incorrectBtn);
         menuBox.getChildren().addAll(menuTitleLabel, resetScoreBtn, uploadBtn, premadeDecksLabel, timesTablesDeckBtn, triviaDeckBtn);
@@ -101,6 +115,7 @@ public class App extends Application {
         correctBtn.setOnAction(event -> updateCorrectAnswers());
         incorrectBtn.setOnAction(event -> updateIncorrectAnswers());
         resetScoreBtn.setOnAction(event -> resetScore());
+        timesTablesDeckBtn.setOnAction(event -> setDeck("Times Tables Deck.txt"));
 
 
         // Set up and display window
@@ -126,5 +141,28 @@ public class App extends Application {
         incorrectAnswers = 0;
         correctText.setText("0");
         incorrectText.setText("0");
+    }
+
+    void setDeck(String deckFileName) {
+        File deckFile = new File("Times Tables Deck.txt");
+
+        try {
+            Scanner sc = new Scanner(deckFile);
+            deckTitleText.setText(sc.nextLine());
+
+            questions = sc.nextLine().split(",");
+            answers = sc.nextLine().split(",");
+            progress = 1;
+
+            sc.close();
+
+            progressText.setText("1/" + questions.length);
+            flashcardText.setText(questions[0]);
+
+
+        } catch (FileNotFoundException fne) {
+            messageText.setText("File not found.");
+            return;
+        }
     }
 }
