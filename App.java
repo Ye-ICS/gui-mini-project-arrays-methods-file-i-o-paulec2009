@@ -96,7 +96,7 @@ public class App extends Application {
         VBox messageBox = new VBox();
         messageBox.setAlignment(Pos.CENTER);
         messageBox.setStyle("-fx-padding: 10");
-        messageText = new Text("No flashcards open.");
+        messageText = new Text("Welcome to Flashcards App! Any errors will appear here.");
 
 
         // Organize components in 
@@ -116,6 +116,7 @@ public class App extends Application {
         incorrectBtn.setOnAction(event -> updateIncorrectAnswers());
         resetScoreBtn.setOnAction(event -> resetScore());
         timesTablesDeckBtn.setOnAction(event -> setDeck("Times Tables Deck.txt"));
+        flipBtn.setOnAction(event -> flipCard());
 
 
         // Set up and display window
@@ -131,10 +132,12 @@ public class App extends Application {
         correctText.setText(Integer.toString(correctAnswers));
     }
 
+
     void updateIncorrectAnswers() {
         incorrectAnswers++;
         incorrectText.setText(Integer.toString(incorrectAnswers));
     }
+
 
     void resetScore() {
         correctAnswers = 0;
@@ -142,6 +145,7 @@ public class App extends Application {
         correctText.setText("0");
         incorrectText.setText("0");
     }
+
 
     void setDeck(String deckFileName) {
         File deckFile = new File("Times Tables Deck.txt");
@@ -163,6 +167,15 @@ public class App extends Application {
         } catch (FileNotFoundException fne) {
             messageText.setText("File not found.");
             return;
+        }
+    }
+
+
+    void flipCard() {
+        if (flashcardText.getText().equals(questions[progress-1])) {
+            flashcardText.setText(answers[progress-1]);
+        } else {
+            flashcardText.setText(questions[progress-1]);
         }
     }
 }
