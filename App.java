@@ -1,7 +1,6 @@
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
-
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -115,7 +114,8 @@ public class App extends Application {
         correctBtn.setOnAction(event -> updateCorrectAnswers());
         incorrectBtn.setOnAction(event -> updateIncorrectAnswers());
         resetScoreBtn.setOnAction(event -> resetScore());
-        timesTablesDeckBtn.setOnAction(event -> setDeck("Times Tables Deck.txt"));
+        timesTablesDeckBtn.setOnAction(event -> setPresetDeck("Times Tables Deck.txt"));
+        triviaDeckBtn.setOnAction(event -> setPresetDeck("Trivia Deck.txt"));
         flipBtn.setOnAction(event -> flipCard());
         nextBtn.setOnAction(event -> nextCard());
         previousBtn.setOnAction(event -> previousCard());
@@ -149,8 +149,8 @@ public class App extends Application {
     }
 
 
-    void setDeck(String deckFileName) {
-        File deckFile = new File("Times Tables Deck.txt");
+    void setPresetDeck(String deckFileName) {
+        File deckFile = new File(deckFileName);
 
         try {
             Scanner sc = new Scanner(deckFile);
