@@ -1,5 +1,6 @@
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.NoSuchElementException;
 import java.util.Scanner;
 import javafx.application.Application;
 import javafx.geometry.Insets;
@@ -169,7 +170,7 @@ public class App extends Application {
             flashcardText.setText(questions[0]);
 
 
-        } catch (FileNotFoundException fne) {
+        } catch (FileNotFoundException fnfe) {
             messageText.setText("File not found.");
             return;
         }
@@ -228,11 +229,39 @@ public class App extends Application {
 
     void uploadDeck() {
         FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Select Deck File");
+        fileChooser.setTitle("DECK FILE FORMAT: Line 1 - deck title, Line 2 - questions seperated by commas, Line 3 - answers seperated by commas");
         userDeckFile = fileChooser.showOpenDialog(null);
 
         if (userDeckFile != null) {
-            setDeck(userDeckFile.getName());
+            if (checkDeck(userDeckFile)) {
+                setDeck(userDeckFile.getName());
+            }
+        }
+    }
+
+    Boolean checkDeck(File deckFile) {
+        try {
+            Scanner sc = new Scanner(deckFile);
+            sc.nextLine();
+            String[] checkQuestions = sc.nextLine().split(",");
+            String [] checkAnswers = sc.nextLine().split(",");
+            sc.close();
+
+            Boolean valid = true;
+
+            if (checkQuestions.length != checkAnswers.length) {
+                messageText.setText("Uneven amount of questions and answers.");
+                valid = false;
+            }
+            return valid;
+
+        } catch (FileNotFoundException fnfe) {
+            messageText.setText("File not found.");
+            return false;
+
+        } catch (NoSuchElementException nsee) {
+            messageText.setText("Invalid file format: not enough lines.");
+            return false;
         }
     }
 }
