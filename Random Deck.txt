@@ -1,0 +1,3 @@
+Random
+What colour is the sun?,What colour is the sky?,What colour is grass?
+Yellow,Blue,Green

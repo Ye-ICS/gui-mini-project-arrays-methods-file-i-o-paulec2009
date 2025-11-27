@@ -11,6 +11,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 
@@ -29,6 +30,7 @@ public class App extends Application {
     Text progressText;
     Text messageText;
     Text flashcardText;
+    File userDeckFile;
     
     public static void main(String[] args) {
         launch(args);
@@ -114,11 +116,12 @@ public class App extends Application {
         correctBtn.setOnAction(event -> updateCorrectAnswers());
         incorrectBtn.setOnAction(event -> updateIncorrectAnswers());
         resetScoreBtn.setOnAction(event -> resetScore());
-        timesTablesDeckBtn.setOnAction(event -> setPresetDeck("Times Tables Deck.txt"));
-        triviaDeckBtn.setOnAction(event -> setPresetDeck("Trivia Deck.txt"));
+        timesTablesDeckBtn.setOnAction(event -> setDeck("Times Tables Deck.txt"));
+        triviaDeckBtn.setOnAction(event -> setDeck("Trivia Deck.txt"));
         flipBtn.setOnAction(event -> flipCard());
         nextBtn.setOnAction(event -> nextCard());
         previousBtn.setOnAction(event -> previousCard());
+        uploadBtn.setOnAction(event -> uploadDeck());
 
 
         // Set up and display window
@@ -149,7 +152,7 @@ public class App extends Application {
     }
 
 
-    void setPresetDeck(String deckFileName) {
+    void setDeck(String deckFileName) {
         File deckFile = new File(deckFileName);
 
         try {
@@ -219,6 +222,17 @@ public class App extends Application {
         } catch (NullPointerException npe) {
             messageText.setText("No deck has been selected.");
             return;
+        }
+    }
+
+
+    void uploadDeck() {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Select Deck File");
+        userDeckFile = fileChooser.showOpenDialog(null);
+
+        if (userDeckFile != null) {
+            setDeck(userDeckFile.getName());
         }
     }
 }
