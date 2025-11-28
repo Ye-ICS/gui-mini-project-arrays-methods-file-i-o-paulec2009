@@ -119,7 +119,13 @@ public class App extends Application {
 
         // Button reactions
         correctBtn.setOnAction(event -> updateCorrectAnswers());
-        incorrectBtn.setOnAction(event -> updateIncorrectAnswers(questions[progress-1], answers[progress-1]));
+        incorrectBtn.setOnAction(event -> {
+            try {
+                updateIncorrectAnswers(questions[progress-1], answers[progress-1]);
+            } catch (NullPointerException npe) {
+                messageText.setText("No deck has been selected.");
+            }
+        });
         resetScoreBtn.setOnAction(event -> resetScore());
         timesTablesDeckBtn.setOnAction(event -> setDeck("Times Tables Deck.txt"));
         triviaDeckBtn.setOnAction(event -> setDeck("Trivia Deck.txt"));
@@ -141,6 +147,7 @@ public class App extends Application {
     void updateCorrectAnswers() {
         if (questions == null) {
             messageText.setText("No deck has been selected.");
+            return;
             
         } else {
             correctAnswers++;
@@ -150,19 +157,14 @@ public class App extends Application {
 
 
     void updateIncorrectAnswers(String question, String answer) {
-        if (questions == null) {
-            messageText.setText("No deck has been selected.");
+        incorrectAnswers++;
+        incorrectText.setText(Integer.toString(incorrectAnswers));
 
-        } else {
-            incorrectAnswers++;
-            incorrectText.setText(Integer.toString(incorrectAnswers));
-
-            if (!redoQuestions.contains(question)) {
-                redoQuestions.add(question);
-            }
-            if (!redoAnswers.contains(answer)) {
-                redoAnswers.add(answer);
-            }
+        if (!redoQuestions.contains(question)) {
+            redoQuestions.add(question);
+        }
+        if (!redoAnswers.contains(answer)) {
+            redoAnswers.add(answer);
         }
     }
 
@@ -288,13 +290,19 @@ public class App extends Application {
 
 
     void redoIncorrectAnswers() {
-        progress = 1;
-        questions = new String[redoQuestions.size()];
-        questions = redoQuestions.toArray(questions);
-        answers = new String[redoAnswers.size()];
-        answers = redoAnswers.toArray(answers);
-        deckTitleText.setText("Redo Incorrect Answers");
-        progressText.setText("1/" + questions.length);
-        flashcardText.setText(questions[0]);
+        if (redoQuestions.size() == 0) {
+            messageText.setText("You don't have any incorrect answers.");
+            return;
+
+        } else {
+            progress = 1;
+            questions = new String[redoQuestions.size()];
+            questions = redoQuestions.toArray(questions);
+            answers = new String[redoAnswers.size()];
+            answers = redoAnswers.toArray(answers);
+            deckTitleText.setText("Redo Incorrect Answers");
+            progressText.setText("1/" + questions.length);
+            flashcardText.setText(questions[0]);
+        }
     }
 }
