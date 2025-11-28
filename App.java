@@ -1,5 +1,6 @@
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
 import javafx.application.Application;
@@ -23,7 +24,9 @@ public class App extends Application {
     int progress = 0;
     String currentDeck;
     String[] questions;
-    String [] answers;
+    String[] answers;
+    ArrayList<String> redoQuestions = new ArrayList<>();
+    ArrayList<String> redoAnswers = new ArrayList<>();
 
     Text correctText;
     Text incorrectText;
@@ -88,6 +91,7 @@ public class App extends Application {
 
         Button resetScoreBtn = new Button("Reset Score");
         Button uploadBtn = new Button("Upload Deck");
+        Button redoIncorrectBtn = new Button("Redo Incorrect Answers");
 
         Label premadeDecksLabel = new Label("Premade decks:");
         VBox.setMargin(premadeDecksLabel, new Insets(20, 0, 0, 0));
@@ -110,12 +114,12 @@ public class App extends Application {
         deckDescriptionBox.getChildren().addAll(deckTitleText, seperatorText, progressText);
         contentBox.getChildren().addAll(deckDescriptionBox, flashcardBox, controlsBox);
         controlsBox.getChildren().addAll(correctBtn, correctText, previousBtn, flipBtn, nextBtn, incorrectText, incorrectBtn);
-        menuBox.getChildren().addAll(menuTitleLabel, resetScoreBtn, uploadBtn, premadeDecksLabel, timesTablesDeckBtn, triviaDeckBtn);
+        menuBox.getChildren().addAll(menuTitleLabel, resetScoreBtn, uploadBtn, redoIncorrectBtn, premadeDecksLabel, timesTablesDeckBtn, triviaDeckBtn);
 
 
         // Button reactions
         correctBtn.setOnAction(event -> updateCorrectAnswers());
-        incorrectBtn.setOnAction(event -> updateIncorrectAnswers());
+        incorrectBtn.setOnAction(event -> updateIncorrectAnswers(questions[progress-1], answers[progress-1]));
         resetScoreBtn.setOnAction(event -> resetScore());
         timesTablesDeckBtn.setOnAction(event -> setDeck("Times Tables Deck.txt"));
         triviaDeckBtn.setOnAction(event -> setDeck("Trivia Deck.txt"));
@@ -123,6 +127,7 @@ public class App extends Application {
         nextBtn.setOnAction(event -> nextCard());
         previousBtn.setOnAction(event -> previousCard());
         uploadBtn.setOnAction(event -> uploadDeck());
+        redoIncorrectBtn.setOnAction(event -> redoIncorrectAnswers());
 
 
         // Set up and display window
@@ -134,14 +139,27 @@ public class App extends Application {
 
 
     void updateCorrectAnswers() {
-        correctAnswers++;
-        correctText.setText(Integer.toString(correctAnswers));
+        if (questions == null) {
+            messageText.setText("No deck has been selected.");
+            
+        } else {
+            correctAnswers++;
+            correctText.setText(Integer.toString(correctAnswers));
+        }
     }
 
 
-    void updateIncorrectAnswers() {
-        incorrectAnswers++;
-        incorrectText.setText(Integer.toString(incorrectAnswers));
+    void updateIncorrectAnswers(String question, String answer) {
+        if (questions == null) {
+            messageText.setText("No deck has been selected.");
+
+        } else {
+            incorrectAnswers++;
+            incorrectText.setText(Integer.toString(incorrectAnswers));
+
+            redoQuestions.add(question);
+            redoAnswers.add(answer);
+        }
     }
 
 
@@ -189,7 +207,6 @@ public class App extends Application {
             messageText.setText("No deck has been selected.");
             return;
         }
-        
     }
 
 
@@ -263,5 +280,17 @@ public class App extends Application {
             messageText.setText("Invalid file format: not enough lines.");
             return false;
         }
+    }
+
+
+    void redoIncorrectAnswers() {
+        progress = 1;
+        questions = new String[redoQuestions.size()];
+        questions = redoQuestions.toArray(questions);
+        answers = new String[redoAnswers.size()];
+        answers = redoAnswers.toArray(answers);
+        deckTitleText.setText("Redo Incorrect Answers");
+        progressText.setText("1/" + questions.length);
+        flashcardText.setText(questions[0]);
     }
 }
