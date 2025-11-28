@@ -157,8 +157,12 @@ public class App extends Application {
             incorrectAnswers++;
             incorrectText.setText(Integer.toString(incorrectAnswers));
 
-            redoQuestions.add(question);
-            redoAnswers.add(answer);
+            if (!redoQuestions.contains(question)) {
+                redoQuestions.add(question);
+            }
+            if (!redoAnswers.contains(answer)) {
+                redoAnswers.add(answer);
+            }
         }
     }
 
