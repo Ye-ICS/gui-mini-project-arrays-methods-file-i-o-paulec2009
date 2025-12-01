@@ -174,6 +174,8 @@ public class App extends Application {
         incorrectAnswers = 0;
         correctText.setText("0");
         incorrectText.setText("0");
+        redoQuestions.clear();
+        redoAnswers.clear();
     }
 
 
@@ -262,6 +264,7 @@ public class App extends Application {
         }
     }
 
+    
     Boolean checkDeck(File deckFile) {
         try {
             Scanner sc = new Scanner(deckFile);
@@ -300,7 +303,7 @@ public class App extends Application {
             questions = redoQuestions.toArray(questions);
             answers = new String[redoAnswers.size()];
             answers = redoAnswers.toArray(answers);
-            deckTitleText.setText("Redo Incorrect Answers");
+            deckTitleText.setText("Redoing Incorrect Answers");
             progressText.setText("1/" + questions.length);
             flashcardText.setText(questions[0]);
         }
