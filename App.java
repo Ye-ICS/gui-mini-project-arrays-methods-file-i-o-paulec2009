@@ -1,5 +1,6 @@
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
@@ -35,6 +36,7 @@ public class App extends Application {
     Text messageText;
     Text flashcardText;
     File userDeckFile;
+    File userStatsFile;
     
     public static void main(String[] args) {
         launch(args);
@@ -92,6 +94,7 @@ public class App extends Application {
         Button resetScoreBtn = new Button("Reset Score");
         Button uploadBtn = new Button("Upload Deck");
         Button redoIncorrectBtn = new Button("Redo Incorrect Answers");
+        Button saveStatsBtn = new Button("Save Stats");
 
         Label premadeDecksLabel = new Label("Premade decks:");
         VBox.setMargin(premadeDecksLabel, new Insets(20, 0, 0, 0));
@@ -114,7 +117,7 @@ public class App extends Application {
         deckDescriptionBox.getChildren().addAll(deckTitleText, seperatorText, progressText);
         contentBox.getChildren().addAll(deckDescriptionBox, flashcardBox, controlsBox);
         controlsBox.getChildren().addAll(correctBtn, correctText, previousBtn, flipBtn, nextBtn, incorrectText, incorrectBtn);
-        menuBox.getChildren().addAll(menuTitleLabel, resetScoreBtn, uploadBtn, redoIncorrectBtn, premadeDecksLabel, timesTablesDeckBtn, triviaDeckBtn);
+        menuBox.getChildren().addAll(menuTitleLabel, resetScoreBtn, uploadBtn, redoIncorrectBtn, saveStatsBtn, premadeDecksLabel, timesTablesDeckBtn, triviaDeckBtn);
 
 
         // Button reactions
@@ -134,6 +137,7 @@ public class App extends Application {
         previousBtn.setOnAction(event -> previousCard());
         uploadBtn.setOnAction(event -> uploadDeck());
         redoIncorrectBtn.setOnAction(event -> redoIncorrectAnswers());
+        saveStatsBtn.setOnAction(event -> saveStats());
 
 
         // Set up and display window
@@ -306,6 +310,25 @@ public class App extends Application {
             deckTitleText.setText("Redoing Incorrect Answers");
             progressText.setText("1/" + questions.length);
             flashcardText.setText(questions[0]);
+        }
+    }
+
+
+    void saveStats() {
+        try {
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.setTitle("Select Tune File");
+            userStatsFile = fileChooser.showSaveDialog(null);
+            PrintWriter fileWriter = new PrintWriter(userStatsFile);
+
+            fileWriter.println("Correct answers: " + correctAnswers);
+            fileWriter.println("Incorrect answers: " + incorrectAnswers);
+
+            fileWriter.close();
+
+        } catch (FileNotFoundException fnfe) {
+            messageText.setText("File not found.");
+            return;
         }
     }
 }
