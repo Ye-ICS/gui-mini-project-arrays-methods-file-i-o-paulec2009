@@ -323,6 +323,11 @@ public class App extends Application {
 
             fileWriter.println("Correct answers: " + correctAnswers);
             fileWriter.println("Incorrect answers: " + incorrectAnswers);
+            fileWriter.println("\nIncorrect questions:");
+
+            for (int i = 0; i < redoQuestions.size(); i++) {
+                fileWriter.println("   " + redoQuestions.get(i));
+            }
 
             fileWriter.close();
 
