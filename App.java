@@ -4,6 +4,7 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
+import java.util.concurrent.ThreadLocalRandom;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -60,7 +61,7 @@ public class App extends Application {
         flashcardBox.setAlignment(Pos.CENTER);
         flashcardBox.setStyle("-fx-border-color: black");
         flashcardBox.setMinWidth(300);
-        flashcardBox.setMinHeight(200);
+        flashcardBox.setMinHeight(250);
         flashcardText = new Text();
 
         HBox deckDescriptionBox = new HBox();
@@ -92,6 +93,7 @@ public class App extends Application {
         menuTitleLabel.setStyle("-fx-font-size: 15; -fx-font-weight: bold");
 
         Button resetScoreBtn = new Button("Reset Score");
+        Button shuffleDeckBtn = new Button("Shuffle Deck");
         Button uploadBtn = new Button("Upload Deck");
         Button redoIncorrectBtn = new Button("Redo Incorrect Answers");
         Button saveStatsBtn = new Button("Save Stats");
@@ -117,7 +119,7 @@ public class App extends Application {
         deckDescriptionBox.getChildren().addAll(deckTitleText, seperatorText, progressText);
         contentBox.getChildren().addAll(deckDescriptionBox, flashcardBox, controlsBox);
         controlsBox.getChildren().addAll(correctBtn, correctText, previousBtn, flipBtn, nextBtn, incorrectText, incorrectBtn);
-        menuBox.getChildren().addAll(menuTitleLabel, resetScoreBtn, uploadBtn, redoIncorrectBtn, saveStatsBtn, premadeDecksLabel, timesTablesDeckBtn, triviaDeckBtn);
+        menuBox.getChildren().addAll(menuTitleLabel, resetScoreBtn, shuffleDeckBtn, uploadBtn, redoIncorrectBtn, saveStatsBtn, premadeDecksLabel, timesTablesDeckBtn, triviaDeckBtn);
 
 
         // Button reactions
@@ -138,6 +140,7 @@ public class App extends Application {
         uploadBtn.setOnAction(event -> uploadDeck());
         redoIncorrectBtn.setOnAction(event -> redoIncorrectAnswers());
         saveStatsBtn.setOnAction(event -> saveStats());
+        shuffleDeckBtn.setOnAction(event -> shuffleDeck());
 
 
         // Set up and display window
@@ -337,5 +340,24 @@ public class App extends Application {
         } catch (NullPointerException npe) {
             return;
         }
+    }
+
+
+    void shuffleDeck() {
+        int randomInt;
+        String temp;
+
+        for (int i = 0; i < questions.length-1; i++) {
+            randomInt = ThreadLocalRandom.current().nextInt(i, questions.length-1);
+
+            temp = questions[randomInt];
+            questions[randomInt] = questions[i];
+            questions[i] = temp;
+
+            temp = answers[randomInt];
+            answers[randomInt] = answers[i];
+            answers[i] = temp;
+        }
+        flashcardText.setText(questions[progress-1]);
     }
 }
