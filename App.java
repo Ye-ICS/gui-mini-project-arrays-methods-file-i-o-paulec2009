@@ -97,7 +97,7 @@ public class App extends Application {
         Button saveStatsBtn = new Button("Save Stats");
 
         Label premadeDecksLabel = new Label("Premade decks:");
-        VBox.setMargin(premadeDecksLabel, new Insets(20, 0, 0, 0));
+        VBox.setMargin(premadeDecksLabel, new Insets(15, 0, 0, 0));
 
         Button timesTablesDeckBtn = new Button("Times Tables");
         Button triviaDeckBtn = new Button("Trivia");
@@ -317,7 +317,7 @@ public class App extends Application {
     void saveStats() {
         try {
             FileChooser fileChooser = new FileChooser();
-            fileChooser.setTitle("Select Tune File");
+            fileChooser.setTitle("Select file to save stats in");
             userStatsFile = fileChooser.showSaveDialog(null);
             PrintWriter fileWriter = new PrintWriter(userStatsFile);
 
@@ -333,6 +333,8 @@ public class App extends Application {
 
         } catch (FileNotFoundException fnfe) {
             messageText.setText("File not found.");
+            return;
+        } catch (NullPointerException npe) {
             return;
         }
     }
