@@ -144,7 +144,7 @@ public class App extends Application {
         Button addCardBtn = new Button("Add to Deck");
         Button clearDeckBtn = new Button("Clear Deck");
         Button setDeckBtn = new Button("Set Deck");
-        Button saveDeckBtn = new Button("Save Deck");
+        Button saveDeckBtn = new Button("Save Deck to File");
 
 
         // Organize components in containers
@@ -185,6 +185,7 @@ public class App extends Application {
         shuffleDeckBtn.setOnAction(event -> shuffleDeck());
         addCardBtn.setOnAction(event -> addUserCard());
         clearDeckBtn.setOnAction(event -> clearUserDeck());
+        setDeckBtn.setOnAction(event -> setUserDeck());
 
 
         // Set up and display window
@@ -431,5 +432,23 @@ public class App extends Application {
     void clearUserDeck() {
         userDeckQuestions.clear();
         userDeckAnswers.clear();
+    }
+
+
+    void setUserDeck() {
+        if (userDeckQuestions.size() == 0) {
+            messageText.setText("Your deck is empty.");
+            return;
+
+        } else {
+            progress = 1;
+            questions = new String[userDeckQuestions.size()];
+            questions = userDeckQuestions.toArray(questions);
+            answers = new String[userDeckAnswers.size()];
+            answers = userDeckAnswers.toArray(answers);
+            deckTitleText.setText("Your Deck");
+            progressText.setText("1/" + questions.length);
+            flashcardText.setText(questions[0]);
+        }
     }
 }
