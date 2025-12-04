@@ -110,7 +110,7 @@ public class App extends Application {
         messageText = new Text("Welcome to Flashcards App! Any errors will appear here.");
 
 
-        // Organize components in 
+        // Organize components in containers
         mainBox.setLeft(contentBox);
         mainBox.setRight(menuBox);
         mainBox.setBottom(messageBox);
@@ -151,6 +151,8 @@ public class App extends Application {
     }
 
 
+
+    
     void updateCorrectAnswers() {
         if (questions == null) {
             messageText.setText("No deck has been selected.");
@@ -344,20 +346,26 @@ public class App extends Application {
 
 
     void shuffleDeck() {
-        int randomInt;
-        String temp;
+        try {
+            int randomInt;
+            String temp;
 
-        for (int i = 0; i < questions.length-1; i++) {
-            randomInt = ThreadLocalRandom.current().nextInt(i, questions.length-1);
+            for (int i = 0; i < questions.length-1; i++) {
+                randomInt = ThreadLocalRandom.current().nextInt(i, questions.length-1);
 
-            temp = questions[randomInt];
-            questions[randomInt] = questions[i];
-            questions[i] = temp;
+                temp = questions[randomInt];
+                questions[randomInt] = questions[i];
+                questions[i] = temp;
 
-            temp = answers[randomInt];
-            answers[randomInt] = answers[i];
-            answers[i] = temp;
+                temp = answers[randomInt];
+                answers[randomInt] = answers[i];
+                answers[i] = temp;
+            }
+            flashcardText.setText(questions[progress-1]);
+
+        } catch (NullPointerException npe) {
+            messageText.setText("No deck has been selected.");
+            return;
         }
-        flashcardText.setText(questions[progress-1]);
     }
 }
