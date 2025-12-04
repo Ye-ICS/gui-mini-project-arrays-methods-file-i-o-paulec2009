@@ -11,6 +11,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -108,16 +109,52 @@ public class App extends Application {
         messageBox.setAlignment(Pos.CENTER);
         messageBox.setStyle("-fx-padding: 10");
         messageText = new Text("Welcome to Flashcards App! Any errors will appear here.");
+        VBox.setMargin(messageBox, new Insets(0, 0, 15, 0));
+
+        VBox createDeckBox = new VBox(5);
+        createDeckBox.setAlignment(Pos.CENTER);
+        createDeckBox.setStyle("-fx-padding: 10");
+
+        Label createDeckLabel = new Label("Create Your Own Deck");
+        createDeckLabel.setStyle("-fx-font-size: 15; -fx-font-weight: bold");
+        VBox.setMargin(createDeckLabel, new Insets(15, 0, 0, 0));
+        
+        HBox questionFieldBox = new HBox();
+        questionFieldBox.setAlignment(Pos.CENTER);
+        HBox answerFieldBox = new HBox();
+        answerFieldBox.setAlignment(Pos.CENTER);
+        HBox createDeckControlsBox = new HBox(10);
+        createDeckControlsBox.setAlignment(Pos.CENTER);
+
+        Label questionFieldLabel = new Label("Question: ");
+        Label answerFieldLabel = new Label("Answer: ");
+
+        TextField questionField = new TextField();
+        questionField.setMinWidth(400);
+        questionField.setPromptText(" type a question you would like to add to your deck here");
+        TextField answerField = new TextField();
+        answerField.setMinWidth(410);
+        answerField.setPromptText(" type the answer to that question here");
+
+        Button addCardBtn = new Button("Add to Deck");
+        Button clearDeckBtn = new Button("Clear Deck");
+        Button setDeckBtn = new Button("Set Deck");
+        Button saveDeckBtn = new Button("Save Deck");
 
 
         // Organize components in containers
         mainBox.setLeft(contentBox);
         mainBox.setRight(menuBox);
-        mainBox.setBottom(messageBox);
+        mainBox.setBottom(createDeckBox);
+        mainBox.setTop(messageBox);
         flashcardBox.getChildren().add(flashcardText);
         messageBox.getChildren().add(messageText);
+        questionFieldBox.getChildren().addAll(questionFieldLabel, questionField);
+        answerFieldBox.getChildren().addAll(answerFieldLabel, answerField);
+        createDeckControlsBox.getChildren().addAll(addCardBtn, setDeckBtn, clearDeckBtn, saveDeckBtn);
         deckDescriptionBox.getChildren().addAll(deckTitleText, seperatorText, progressText);
         contentBox.getChildren().addAll(deckDescriptionBox, flashcardBox, controlsBox);
+        createDeckBox.getChildren().addAll(createDeckLabel, questionFieldBox, answerFieldBox, createDeckControlsBox);
         controlsBox.getChildren().addAll(correctBtn, correctText, previousBtn, flipBtn, nextBtn, incorrectText, incorrectBtn);
         menuBox.getChildren().addAll(menuTitleLabel, resetScoreBtn, shuffleDeckBtn, uploadBtn, redoIncorrectBtn, saveStatsBtn, premadeDecksLabel, timesTablesDeckBtn, triviaDeckBtn);
 
