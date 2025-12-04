@@ -186,6 +186,7 @@ public class App extends Application {
         addCardBtn.setOnAction(event -> addUserCard());
         clearDeckBtn.setOnAction(event -> clearUserDeck());
         setDeckBtn.setOnAction(event -> setUserDeck());
+        saveDeckBtn.setOnAction(event -> saveUserDeck());
 
 
         // Set up and display window
@@ -449,6 +450,40 @@ public class App extends Application {
             deckTitleText.setText("Your Deck");
             progressText.setText("1/" + questions.length);
             flashcardText.setText(questions[0]);
+        }
+    }
+
+
+    void saveUserDeck() {
+        if (userDeckQuestions.size() == 0) {
+            messageText.setText("Your deck is empty.");
+            return;
+
+        } else {
+            try {
+                FileChooser fileChooser = new FileChooser();
+                fileChooser.setTitle("Select file to save deck in");
+                userStatsFile = fileChooser.showSaveDialog(null);
+                PrintWriter fileWriter = new PrintWriter(userStatsFile);
+
+                for (int i = 0; i < userDeckQuestions.size()-1; i++) {
+                    fileWriter.print(userDeckQuestions.get(i) + ",");
+                }
+                fileWriter.println(userDeckQuestions.get(userDeckQuestions.size()-1));
+
+                for (int i = 0; i < userDeckAnswers.size()-1; i++) {
+                    fileWriter.print(userDeckAnswers.get(i) + ",");
+                }
+                fileWriter.print(userDeckAnswers.get(userDeckAnswers.size()-1));
+
+                fileWriter.close();
+
+            } catch (FileNotFoundException fnfe) {
+                messageText.setText("File not found.");
+                return;
+            } catch (NullPointerException npe) {
+                return;
+            }
         }
     }
 }
