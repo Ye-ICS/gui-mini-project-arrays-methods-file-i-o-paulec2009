@@ -184,6 +184,7 @@ public class App extends Application {
         saveStatsBtn.setOnAction(event -> saveStats());
         shuffleDeckBtn.setOnAction(event -> shuffleDeck());
         addCardBtn.setOnAction(event -> addUserCard());
+        clearDeckBtn.setOnAction(event -> clearUserDeck());
 
 
         // Set up and display window
@@ -424,5 +425,11 @@ public class App extends Application {
             userDeckAnswers.add(answerField.getText());
             answerField.clear();
         }
+    }
+
+
+    void clearUserDeck() {
+        userDeckQuestions.clear();
+        userDeckAnswers.clear();
     }
 }
