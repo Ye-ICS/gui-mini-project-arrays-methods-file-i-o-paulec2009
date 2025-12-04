@@ -30,6 +30,8 @@ public class App extends Application {
     String[] answers;
     ArrayList<String> redoQuestions = new ArrayList<>();
     ArrayList<String> redoAnswers = new ArrayList<>();
+    ArrayList<String> userDeckQuestions = new ArrayList<>();
+    ArrayList<String> userDeckAnswers = new ArrayList<>();
 
     Text correctText;
     Text incorrectText;
@@ -39,6 +41,8 @@ public class App extends Application {
     Text flashcardText;
     File userDeckFile;
     File userStatsFile;
+    TextField questionField;
+    TextField answerField;
     
     public static void main(String[] args) {
         launch(args);
@@ -117,7 +121,7 @@ public class App extends Application {
 
         Label createDeckLabel = new Label("Create Your Own Deck");
         createDeckLabel.setStyle("-fx-font-size: 15; -fx-font-weight: bold");
-        VBox.setMargin(createDeckLabel, new Insets(15, 0, 0, 0));
+        VBox.setMargin(createDeckLabel, new Insets(15, 0, 5, 0));
         
         HBox questionFieldBox = new HBox();
         questionFieldBox.setAlignment(Pos.CENTER);
@@ -129,12 +133,13 @@ public class App extends Application {
         Label questionFieldLabel = new Label("Question: ");
         Label answerFieldLabel = new Label("Answer: ");
 
-        TextField questionField = new TextField();
+        questionField = new TextField();
         questionField.setMinWidth(400);
-        questionField.setPromptText(" type a question you would like to add to your deck here");
-        TextField answerField = new TextField();
+        questionField.setPromptText(" type a question to add to your deck here");
+        answerField = new TextField();
         answerField.setMinWidth(410);
         answerField.setPromptText(" type the answer to that question here");
+        HBox.setMargin(answerField, new Insets(0, 0, 10, 0));
 
         Button addCardBtn = new Button("Add to Deck");
         Button clearDeckBtn = new Button("Clear Deck");
@@ -178,6 +183,7 @@ public class App extends Application {
         redoIncorrectBtn.setOnAction(event -> redoIncorrectAnswers());
         saveStatsBtn.setOnAction(event -> saveStats());
         shuffleDeckBtn.setOnAction(event -> shuffleDeck());
+        addCardBtn.setOnAction(event -> addUserCard());
 
 
         // Set up and display window
@@ -403,6 +409,20 @@ public class App extends Application {
         } catch (NullPointerException npe) {
             messageText.setText("No deck has been selected.");
             return;
+        }
+    }
+
+
+    void addUserCard() {
+        if (questionField.getText() == "" || answerField.getText() == "") {
+            messageText.setText("Please type something in the question box and the answer box.");
+            return;
+
+        } else {
+            userDeckQuestions.add(questionField.getText());
+            questionField.clear();
+            userDeckAnswers.add(answerField.getText());
+            answerField.clear();
         }
     }
 }
