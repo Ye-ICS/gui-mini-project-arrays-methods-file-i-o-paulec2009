@@ -39,6 +39,7 @@ public class App extends Application {
     Text messageText;
     Text flashcardText;
     File userDeckFile;
+    File userCreatedDeckFile;
     File userStatsFile;
     TextField questionField;
     TextField answerField;
@@ -118,7 +119,7 @@ public class App extends Application {
         Label menuTitleLabel = new Label("Menu");
         menuTitleLabel.setStyle("-fx-font-size: 15; -fx-font-weight: bold");
 
-        Button resetScoreBtn = new Button("Reset Score");
+        Button resetBtn = new Button("Reset Progress");
         Button shuffleDeckBtn = new Button("Shuffle Deck");
         Button uploadBtn = new Button("Upload Deck");
         Button redoIncorrectBtn = new Button("Redo Incorrect Answers");
@@ -168,7 +169,7 @@ public class App extends Application {
         contentBox.getChildren().addAll(deckDescriptionBox, flashcardBox, controlsBox);
         createDeckBox.getChildren().addAll(createDeckLabel, questionFieldBox, answerFieldBox, createDeckControlsBox);
         controlsBox.getChildren().addAll(correctBtn, correctText, previousBtn, flipBtn, nextBtn, incorrectText, incorrectBtn);
-        menuBox.getChildren().addAll(menuTitleLabel, resetScoreBtn, shuffleDeckBtn, uploadBtn, redoIncorrectBtn, saveStatsBtn, premadeDecksLabel, timesTablesDeckBtn, triviaDeckBtn);
+        menuBox.getChildren().addAll(menuTitleLabel, resetBtn, shuffleDeckBtn, uploadBtn, redoIncorrectBtn, saveStatsBtn, premadeDecksLabel, timesTablesDeckBtn, triviaDeckBtn);
 
 
         // Button reactions
@@ -180,7 +181,7 @@ public class App extends Application {
             }
         });
         correctBtn.setOnAction(event -> updateCorrectAnswers());
-        resetScoreBtn.setOnAction(event -> resetScore());
+        resetBtn.setOnAction(event -> resetProgress());
         timesTablesDeckBtn.setOnAction(event -> setDeck("Times Tables Deck.txt"));
         triviaDeckBtn.setOnAction(event -> setDeck("Trivia Deck.txt"));
         flipBtn.setOnAction(event -> flipCard());
@@ -238,13 +239,14 @@ public class App extends Application {
     /**
      * Resets score and questions to redo.
      */
-    void resetScore() {
+    void resetProgress() {
         correctAnswers = 0;
         incorrectAnswers = 0;
         correctText.setText("0");
         incorrectText.setText("0");
         redoQuestions.clear();
         redoAnswers.clear();
+        messageText.setText("Your score and incorrect answers have been reset.");
     }
 
 
@@ -267,6 +269,7 @@ public class App extends Application {
             progressText.setText("1/" + questions.length);
             flashcardText.setText(questions[0]);
 
+            messageText.setText("'" + deckTitleText.getText() + "' has been set to your current deck.");
 
         } catch (FileNotFoundException fnfe) {
             messageText.setText("File not found.");
@@ -394,15 +397,17 @@ public class App extends Application {
             questions = redoQuestions.toArray(questions);
             answers = new String[redoAnswers.size()];
             answers = redoAnswers.toArray(answers);
-            deckTitleText.setText("Redoing Incorrect Answers");
+            deckTitleText.setText("Incorrect Answers");
             progressText.setText("1/" + questions.length);
             flashcardText.setText(questions[0]);
+
+            messageText.setText("You are currently redoing your incorrect answers.");
         }
     }
 
 
     /**
-     * Saves the user's current score and incorrect questions to a chosen file.
+     * Saves the user's current score and incorrect answers to a chosen file.
      */
     void saveStats() {
         try {
@@ -413,13 +418,15 @@ public class App extends Application {
 
             fileWriter.println("Correct answers: " + correctAnswers);
             fileWriter.println("Incorrect answers: " + incorrectAnswers);
-            fileWriter.println("\nIncorrect questions:");
+            fileWriter.println("\nIncorrect answers:");
 
             for (int i = 0; i < redoQuestions.size(); i++) {
                 fileWriter.println("   " + redoQuestions.get(i));
             }
 
             fileWriter.close();
+
+            messageText.setText("Your stats have been saved to '" + userStatsFile.getName() + "'.");
 
         } catch (FileNotFoundException fnfe) {
             messageText.setText("File not found.");
@@ -451,6 +458,8 @@ public class App extends Application {
             }
             flashcardText.setText(questions[progress-1]);
 
+            messageText.setText("The current deck has been shuffled.");
+
         } catch (NullPointerException npe) {
             messageText.setText("No deck has been selected.");
             return;
@@ -471,6 +480,7 @@ public class App extends Application {
             questionField.clear();
             userDeckAnswers.add(answerField.getText());
             answerField.clear();
+            messageText.setText("Card has been added to your deck.");
         }
     }
 
@@ -481,6 +491,7 @@ public class App extends Application {
     void clearUserDeck() {
         userDeckQuestions.clear();
         userDeckAnswers.clear();
+        messageText.setText("Your deck has been cleared.");
     }
 
 
@@ -501,6 +512,8 @@ public class App extends Application {
             deckTitleText.setText("Your Deck");
             progressText.setText("1/" + questions.length);
             flashcardText.setText(questions[0]);
+
+            messageText.setText("Your deck has been set to the current deck.");
         }
     }
 
@@ -517,8 +530,8 @@ public class App extends Application {
             try {
                 FileChooser fileChooser = new FileChooser();
                 fileChooser.setTitle("Select file to save deck in");
-                userStatsFile = fileChooser.showSaveDialog(null);
-                PrintWriter fileWriter = new PrintWriter(userStatsFile);
+                userCreatedDeckFile = fileChooser.showSaveDialog(null);
+                PrintWriter fileWriter = new PrintWriter(userCreatedDeckFile);
 
                 for (int i = 0; i < userDeckQuestions.size()-1; i++) {
                     fileWriter.print(userDeckQuestions.get(i) + ",");
@@ -531,6 +544,8 @@ public class App extends Application {
                 fileWriter.print(userDeckAnswers.get(userDeckAnswers.size()-1));
 
                 fileWriter.close();
+
+                messageText.setText("Your deck has been saved to the chosen file.");
 
             } catch (FileNotFoundException fnfe) {
                 messageText.setText("File not found.");
