@@ -131,7 +131,7 @@ public class App extends Application {
         Button timesTablesDeckBtn = new Button("Times Tables");
         Button triviaDeckBtn = new Button("Trivia");
         
-        messageText = new Text("Welcome to Flashcards App! Any errors will appear here.");
+        messageText = new Text("Welcome to Flashcards App!");
         VBox.setMargin(messageBox, new Insets(0, 0, 15, 0));
 
         Label createDeckLabel = new Label("Create Your Own Deck");
@@ -246,6 +246,7 @@ public class App extends Application {
         incorrectText.setText("0");
         redoQuestions.clear();
         redoAnswers.clear();
+
         messageText.setText("Your score and incorrect answers have been reset.");
     }
 
@@ -259,11 +260,9 @@ public class App extends Application {
         try {
             Scanner sc = new Scanner(deckFile);
             deckTitleText.setText(sc.nextLine());
-
             questions = sc.nextLine().split(",");
             answers = sc.nextLine().split(",");
             progress = 1;
-
             sc.close();
 
             progressText.setText("1/" + questions.length);
@@ -363,7 +362,6 @@ public class App extends Application {
             String[] checkQuestions = sc.nextLine().split(",");
             String [] checkAnswers = sc.nextLine().split(",");
             sc.close();
-
             Boolean valid = true;
 
             if (checkQuestions.length != checkAnswers.length) {
@@ -423,7 +421,6 @@ public class App extends Application {
             for (int i = 0; i < redoQuestions.size(); i++) {
                 fileWriter.println("   " + redoQuestions.get(i));
             }
-
             fileWriter.close();
 
             messageText.setText("Your stats have been saved to '" + userStatsFile.getName() + "'.");
@@ -532,6 +529,8 @@ public class App extends Application {
                 fileChooser.setTitle("Select file to save deck in");
                 userCreatedDeckFile = fileChooser.showSaveDialog(null);
                 PrintWriter fileWriter = new PrintWriter(userCreatedDeckFile);
+
+                fileWriter.println("Your Deck");
 
                 for (int i = 0; i < userDeckQuestions.size()-1; i++) {
                     fileWriter.print(userDeckQuestions.get(i) + ",");
