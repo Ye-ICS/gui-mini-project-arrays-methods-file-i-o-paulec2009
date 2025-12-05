@@ -20,7 +20,6 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 
-
 public class App extends Application {
     int correctAnswers = 0;
     int incorrectAnswers = 0;
@@ -51,7 +50,7 @@ public class App extends Application {
     @Override
     public void start(Stage stage) {
 
-        // Create components and containers
+        // Create main boxes
         BorderPane mainBox = new BorderPane();
 
         VBox contentBox = new VBox(5);
@@ -62,15 +61,40 @@ public class App extends Application {
         menuBox.setAlignment(Pos.CENTER);
         menuBox.setStyle("-fx-padding: 10");
 
+        VBox createDeckBox = new VBox(5);
+        createDeckBox.setAlignment(Pos.CENTER);
+        createDeckBox.setStyle("-fx-padding: 10");
+
+        VBox messageBox = new VBox();
+        messageBox.setAlignment(Pos.CENTER);
+        messageBox.setStyle("-fx-padding: 10");
+
+
+        // Create sub-boxes for organizing elements inside the main boxes
         VBox flashcardBox = new VBox();
         flashcardBox.setAlignment(Pos.CENTER);
         flashcardBox.setStyle("-fx-border-color: black");
         flashcardBox.setMinWidth(300);
         flashcardBox.setMinHeight(250);
-        flashcardText = new Text();
-
+        
         HBox deckDescriptionBox = new HBox();
         deckDescriptionBox.setAlignment(Pos.CENTER);
+
+        HBox controlsBox = new HBox(5);
+        controlsBox.setAlignment(Pos.CENTER);
+
+        HBox questionFieldBox = new HBox();
+        questionFieldBox.setAlignment(Pos.CENTER);
+
+        HBox answerFieldBox = new HBox();
+        answerFieldBox.setAlignment(Pos.CENTER);
+
+        HBox createDeckControlsBox = new HBox(10);
+        createDeckControlsBox.setAlignment(Pos.CENTER);
+
+
+        // Create elements to place inside boxes
+        flashcardText = new Text();
 
         deckTitleText = new Text("(deck title)");
         Text seperatorText = new Text("    |    ");
@@ -78,9 +102,6 @@ public class App extends Application {
         deckTitleText.setStyle("-fx-font-size: 13");
         seperatorText.setStyle("-fx-font-size: 13");
         progressText.setStyle("-fx-font-size: 13");
-
-        HBox controlsBox = new HBox(5);
-        controlsBox.setAlignment(Pos.CENTER);
 
         Button correctBtn = new Button("✓");
         correctText = new Text("0");
@@ -108,38 +129,24 @@ public class App extends Application {
 
         Button timesTablesDeckBtn = new Button("Times Tables");
         Button triviaDeckBtn = new Button("Trivia");
-
-        VBox messageBox = new VBox();
-        messageBox.setAlignment(Pos.CENTER);
-        messageBox.setStyle("-fx-padding: 10");
+        
         messageText = new Text("Welcome to Flashcards App! Any errors will appear here.");
         VBox.setMargin(messageBox, new Insets(0, 0, 15, 0));
-
-        VBox createDeckBox = new VBox(5);
-        createDeckBox.setAlignment(Pos.CENTER);
-        createDeckBox.setStyle("-fx-padding: 10");
 
         Label createDeckLabel = new Label("Create Your Own Deck");
         createDeckLabel.setStyle("-fx-font-size: 15; -fx-font-weight: bold");
         VBox.setMargin(createDeckLabel, new Insets(15, 0, 5, 0));
         
-        HBox questionFieldBox = new HBox();
-        questionFieldBox.setAlignment(Pos.CENTER);
-        HBox answerFieldBox = new HBox();
-        answerFieldBox.setAlignment(Pos.CENTER);
-        HBox createDeckControlsBox = new HBox(10);
-        createDeckControlsBox.setAlignment(Pos.CENTER);
-
         Label questionFieldLabel = new Label("Question: ");
         Label answerFieldLabel = new Label("Answer: ");
 
         questionField = new TextField();
         questionField.setMinWidth(400);
         questionField.setPromptText(" type a question to add to your deck here");
+        
         answerField = new TextField();
         answerField.setMinWidth(410);
         answerField.setPromptText(" type the answer to that question here");
-        HBox.setMargin(answerField, new Insets(0, 0, 10, 0));
 
         Button addCardBtn = new Button("Add to Deck");
         Button clearDeckBtn = new Button("Clear Deck");
@@ -147,7 +154,7 @@ public class App extends Application {
         Button saveDeckBtn = new Button("Save Deck to File");
 
 
-        // Organize components in containers
+        // Organize components in boxes
         mainBox.setLeft(contentBox);
         mainBox.setRight(menuBox);
         mainBox.setBottom(createDeckBox);
@@ -165,7 +172,6 @@ public class App extends Application {
 
 
         // Button reactions
-        correctBtn.setOnAction(event -> updateCorrectAnswers());
         incorrectBtn.setOnAction(event -> {
             try {
                 updateIncorrectAnswers(questions[progress-1], answers[progress-1]);
@@ -173,6 +179,7 @@ public class App extends Application {
                 messageText.setText("No deck has been selected.");
             }
         });
+        correctBtn.setOnAction(event -> updateCorrectAnswers());
         resetScoreBtn.setOnAction(event -> resetScore());
         timesTablesDeckBtn.setOnAction(event -> setDeck("Times Tables Deck.txt"));
         triviaDeckBtn.setOnAction(event -> setDeck("Trivia Deck.txt"));
@@ -198,7 +205,9 @@ public class App extends Application {
 
 
 
-    
+    /**
+     * Adds 1 to the correct answers score and updates display.
+     */
     void updateCorrectAnswers() {
         if (questions == null) {
             messageText.setText("No deck has been selected.");
@@ -211,19 +220,24 @@ public class App extends Application {
     }
 
 
+    /**
+     * Adds 1 to the incorrect answers score and updates display.
+     * Also adds the incorrect question to the list of questions to redo.
+     */
     void updateIncorrectAnswers(String question, String answer) {
         incorrectAnswers++;
         incorrectText.setText(Integer.toString(incorrectAnswers));
 
         if (!redoQuestions.contains(question)) {
             redoQuestions.add(question);
-        }
-        if (!redoAnswers.contains(answer)) {
             redoAnswers.add(answer);
         }
     }
 
 
+    /**
+     * Resets score and questions to redo.
+     */
     void resetScore() {
         correctAnswers = 0;
         incorrectAnswers = 0;
@@ -234,6 +248,9 @@ public class App extends Application {
     }
 
 
+    /**
+     * Sets the deck display to a deck from a specified file.
+     */
     void setDeck(String deckFileName) {
         File deckFile = new File(deckFileName);
 
@@ -258,6 +275,9 @@ public class App extends Application {
     }
 
 
+    /**
+     * Switches display between the current card's question and answer.
+     */
     void flipCard() {
         try {
             if (flashcardText.getText().equals(questions[progress-1])) {
@@ -273,6 +293,9 @@ public class App extends Application {
     }
 
 
+    /**
+     * Switches display to the next card in the deck.
+     */
     void nextCard() {
         try {
             if (progress == questions.length) {
@@ -290,6 +313,9 @@ public class App extends Application {
     }
 
 
+    /**
+     * Switches display to the previous card in the deck.
+     */
     void previousCard() {
         try {
             if (progress == 1) {
@@ -307,6 +333,10 @@ public class App extends Application {
     }
 
 
+    /**
+     * Uploads a deck from a file.
+     * File must have the following format: Line 1 - deck title, Line 2 - questions seperated by commas, Line 3 - answers seperated by commas.
+     */
     void uploadDeck() {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("DECK FILE FORMAT: Line 1 - deck title, Line 2 - questions seperated by commas, Line 3 - answers seperated by commas");
@@ -320,6 +350,9 @@ public class App extends Application {
     }
 
     
+    /**
+     * Checks a deck for any errors before setting it to the display.
+     */
     Boolean checkDeck(File deckFile) {
         try {
             Scanner sc = new Scanner(deckFile);
@@ -347,6 +380,9 @@ public class App extends Application {
     }
 
 
+    /**
+     * Sets display to a deck of the questions the user has answered incorrectly during their current score.
+     */
     void redoIncorrectAnswers() {
         if (redoQuestions.size() == 0) {
             messageText.setText("You don't have any incorrect answers.");
@@ -365,6 +401,9 @@ public class App extends Application {
     }
 
 
+    /**
+     * Saves the user's current score and incorrect questions to a chosen file.
+     */
     void saveStats() {
         try {
             FileChooser fileChooser = new FileChooser();
@@ -391,6 +430,9 @@ public class App extends Application {
     }
 
 
+    /**
+     * Shuffles the order of the questions in the current deck.
+     */
     void shuffleDeck() {
         try {
             int randomInt;
@@ -416,6 +458,9 @@ public class App extends Application {
     }
 
 
+    /**
+     * Adds the provided question to the user's deck.
+     */
     void addUserCard() {
         if (questionField.getText() == "" || answerField.getText() == "") {
             messageText.setText("Please type something in the question box and the answer box.");
@@ -430,12 +475,18 @@ public class App extends Application {
     }
 
 
+    /**
+     * Clears all cards in the user's deck.
+     */
     void clearUserDeck() {
         userDeckQuestions.clear();
         userDeckAnswers.clear();
     }
 
 
+    /**
+     * Sets the user deck to the display.
+     */
     void setUserDeck() {
         if (userDeckQuestions.size() == 0) {
             messageText.setText("Your deck is empty.");
@@ -454,6 +505,9 @@ public class App extends Application {
     }
 
 
+    /**
+     * Saves the user's deck to a chosen file.
+     */
     void saveUserDeck() {
         if (userDeckQuestions.size() == 0) {
             messageText.setText("Your deck is empty.");
