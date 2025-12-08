@@ -1,0 +1,3 @@
+Colours
+What colour is the sun?,What colour is the sky?,What colour is grass?,What colour are the clouds?,What colour is the ocean?,What colour are bananas?,What colour are strawberries?,What colour is snow?,What colour are lemons?,What colour is dirt?
+Yellow,Blue,Green,Gray,Blue,Yellow,Red,White,Yellow,Brown
